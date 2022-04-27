@@ -1,10 +1,12 @@
-
 from django.shortcuts import render,HttpResponse
+from .models import *
+from .serializers import *
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
-def home(request):
-    return HttpResponse('<h1>weBank Project Setup, Docker works fine :-)  </h1>')
 
-
-
-# Create your views here.
+class ClientAccountTransactionHistory(generics.ListAPIView):
+    queryset = Transaction.objects.all()
+    serializer_class = TransactionSerializer
+    

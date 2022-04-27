@@ -1,6 +1,5 @@
 from django.db import models
-from django.core.validators import MinLengthValidator, MaxLengthValidator
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import BaseUserManager, AbstractUser, PermissionsMixin
 
 
 
@@ -26,8 +25,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin):
-
+class User(AbstractUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True, db_index=True)
     username = models.CharField(max_length=255, null=True, unique=True, db_index=True)
     is_active = models.BooleanField(default=True)
@@ -40,10 +38,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     otp = models.CharField(max_length=200)
     
     objects = UserManager()
-    USERNAME_FIELD = "email"
+    
 
     def __str__(self):
-        return self.email
+        return str(self.username)
 
 ACCOUNT_TYPE = (
     ('SAVINGS', 'savings'),
@@ -53,18 +51,12 @@ ACCOUNT_TYPE = (
 
 class Accounts(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    account_no = models.IntegerField(validators=[MinLengthValidator(10),MaxLengthValidator(10)])
+    account_no = models.IntegerField()
     account_type = models.CharField(max_length=40, choices=ACCOUNT_TYPE)
-    account_balance = models.FloatField(default=0)
+    account_balance = models.FloatField(default=[0])
     
     def __str__(self):
-        return self.account_no
-    
-from django.contrib.auth.models import (
-    AbstractBaseUser,
-    BaseUserManager,
-    PermissionsMixin,
-)
+        return str(self.account_no)
 
 
 DEPOSIT = 'Deposit'
@@ -76,7 +68,7 @@ TRANSACTION_TYPE_CHOICES = (
 )
 
 class Transaction(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    accounts_id = models.ForeignKey(Accounts, on_delete=models.CASCADE)
     amount = models.DecimalField(decimal_places=2,max_digits=12)
     transaction_type = models.CharField(max_length= 20, choices=TRANSACTION_TYPE_CHOICES)
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -93,4 +85,4 @@ class Report(models.Model):
     report_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        return self.report_name
+        return str(self.report_name)

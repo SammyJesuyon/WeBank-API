@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import home
+from .views import ClientAccountTransactionHistory
 
 urlpatterns = [
-    path('', home),
+    path('client/transaction/history', ClientAccountTransactionHistory.as_view()),
 ]
