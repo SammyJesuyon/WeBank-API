@@ -35,10 +35,11 @@ class User(AbstractUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    otp = models.CharField(max_length=200)
     
     objects = UserManager()
     
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     def __str__(self):
         return str(self.username)
