@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import generics, viewsets, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.conf import settings
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 from .utils import Util
 
 
@@ -62,6 +62,31 @@ class VerifyEmail(generics.GenericAPIView):
             "success": "Your account has been successfully verified"
         }, status=status.HTTP_200_OK)
         
+class LoginView(generics.GenericAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        email = request.data.get('email', '')
+        password = request.data.get('password', '')
+
+        if email is None or password is None:
+            return Response(data={'Invalid_credentials': 'Please provide email and password'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        user = authenticate(username=email, password=password)
+        if user is not None:
+            login(request, user)
+        if not user:
+            return Response(data={'invalid_credentials': 'Ensure email and password are correct and you have '
+                                                         'verified your account'}, status=status.HTTP_400_BAD_REQUEST)
+        if not user.is_verified:
+            return Response(data={'invalid_credentials': 'Please verify your account'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        self.serializer_class(user)
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response(data={'token': token.key, 'success': "You've successfully Logged in"},
+                        status=status.HTTP_200_OK)
+        
         
 class AccountCreation(generics.GenericAPIView):
     serializer_class = AccountCreationSerializer
@@ -76,16 +101,16 @@ class AccountCreation(generics.GenericAPIView):
             account_type = serializer.validated_data['account_type']
             account_number = Util.create_account_number(7)
             try:
-                account_creation = Accounts.objects.create(
-                    user_id=user,
+                account_creation = Accounts(
+                    user=user, 
                     firstname=firstname,
                     lastname=lastname,
                     account_type=account_type,
-                    account_number=account_number,
+                    account_no=account_number,
                 )
                 return Response(data={'success': 'Account successfully created,',
                                       'account_type': f' {account_type}',
-                                      'account_number': f'{account_creation.account_number}'},
+                                      'account_number': f'{account_number}'},
                                 status=status.HTTP_202_ACCEPTED)
 
             except Exception as error:

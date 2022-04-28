@@ -52,7 +52,7 @@ ACCOUNT_TYPE = (
 
 
 class Accounts(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     firstname = models.CharField(max_length=200, null=True)
     lastname = models.CharField(max_length=200, null=True)
     account_no = models.IntegerField(unique=True)
