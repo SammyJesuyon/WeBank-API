@@ -45,7 +45,7 @@ class LoginSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
-        fields = '__all__'
+        fields = ['accounts_id', 'amount', 'transaction_type']
 
 
 class ReportsSerializer(serializers.ModelSerializer):

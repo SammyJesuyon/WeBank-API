@@ -1,3 +1,4 @@
+from audioop import reverse
 from django.shortcuts import render,HttpResponse
 from .models import *
 from .serializers import *
@@ -5,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import generics, viewsets, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.conf import settings
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .utils import Util
 
 
@@ -86,7 +87,14 @@ class LoginView(generics.GenericAPIView):
         token, _ = Token.objects.get_or_create(user=user)
         return Response(data={'token': token.key, 'success': "You've successfully Logged in"},
                         status=status.HTTP_200_OK)
-        
+
+class LogoutView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+    
+    def post(self, request):
+        user = request.user
+        logout(user)
+        #  reverse('home')
         
 class AccountCreation(generics.GenericAPIView):
     serializer_class = AccountCreationSerializer
@@ -119,6 +127,31 @@ class AccountCreation(generics.GenericAPIView):
                 return Response(data={'error': error}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(data={'error': 'Something Went Wrong'}, status=status.HTTP_400_BAD_REQUEST)
+    
+class CreateTransaction(generics.ListCreateAPIView):
+    serializer_class = TransactionSerializer
+    queryset = User.objects.all()
+
+    # def get_queryset(self, request):
+    #     return self.queryset.filter(user = request.user)
+
+    def post(self, request):
+        data = request.data
+        serializer = self.serializer_class(data = data)
+        if serializer.is_valid(raise_exception = True):
+            user = self.queryset.filter(user = request.user)
+            amount = serializer.validated_data.get('amount')
+            transaction_type = serializer.validated_data.get('transaction_type')
+
+            #: using reversed relationship
+            balance = user.account.account_balance
+            if transaction_type == 'Deposit':
+                balance += amount
+            else:
+                balance -= amount
+            data = Accounts(user = user, amount = amount, transaction_type = transaction_type)
+            return Response(data, status = status.HTTP_201_CREATED)
+        return Response(data, status = status.HTTP_401_UNAUTHORIZED)
     
 class AllTransactionHistory(generics.ListAPIView):
     queryset = Transaction.objects.all()

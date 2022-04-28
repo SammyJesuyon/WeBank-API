@@ -52,7 +52,7 @@ ACCOUNT_TYPE = (
 
 
 class Accounts(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default='user', related_name='account')
     firstname = models.CharField(max_length=200, null=True)
     lastname = models.CharField(max_length=200, null=True)
     account_no = models.IntegerField(unique=True)
@@ -72,8 +72,7 @@ TRANSACTION_TYPE_CHOICES = (
 )
 
 class Transaction(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE, null=True)
-    accounts_id = models.ForeignKey(Accounts, on_delete=models.CASCADE)
+    account = models.ForeignKey(Accounts, on_delete=models.CASCADE, default='1234567890', related_name='transaction')
     amount = models.DecimalField(decimal_places=2,max_digits=12)
     account_balance = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     transaction_type = models.CharField(max_length= 20, choices=TRANSACTION_TYPE_CHOICES)
