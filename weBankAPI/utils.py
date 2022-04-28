@@ -3,6 +3,8 @@ import random
 import string
 
 
+
+
 class Util:
     @staticmethod
     def send_email(data):
@@ -14,9 +16,9 @@ class Util:
         email.send()
 
     @staticmethod
-    def generate_otp(num):
+    def generate_otp(num=6):
         return ''.join(random.choice(string.digits) for i in range(num))
 
     @staticmethod
-    def create_account_number(num):
+    def create_account_number(num=7):
         return '090' + ''.join(random.choice(string.digits) for i in range(num))

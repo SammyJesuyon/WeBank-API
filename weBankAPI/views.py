@@ -1,10 +1,8 @@
-from django.shortcuts import render,HttpResponse
 from .models import *
 from .serializers import *
 from rest_framework.response import Response
-from rest_framework import generics, viewsets, status
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
-from django.conf import settings
 from .utils import Util
 
 
@@ -22,7 +20,7 @@ class RegisterUser(generics.GenericAPIView):
 
         user = User.objects.get(email=user_data['email'])
 
-        OTP = Util.generate_otp(6)
+        OTP = Util.generate_otp()
 
         user.otp = OTP
         user.save()
@@ -37,6 +35,17 @@ class RegisterUser(generics.GenericAPIView):
 
         return Response(user_data, status=status.HTTP_201_CREATED)
     
+class UserListView(generics.ListAPIView):
+    queryset= User.objects.all()
+    serializer_class = UserListSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
+class UserDetailsView(generics.RetrieveAPIView):
+    queryset= User.objects.filter()
+    serializer_class = UserListSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
+     
 class VerifyEmail(generics.GenericAPIView):
     serializer_class = EmailVerification
 
@@ -60,6 +69,23 @@ class VerifyEmail(generics.GenericAPIView):
         return Response(data={
             "success": "Your account has been successfully verified"
         }, status=status.HTTP_200_OK)
+        
+        
+
+class LogoutView(generics.GenericAPIView):
+    # authentication_classes = [TokenAuthentication]
+    
+    def get(self, request):
+        del request.user.token
+        
+    def post(self, request):
+        response = Response()
+        response.delete_cookie('jwt')
+        response.data = {
+            'message': 'logout successful'
+        }
+        return response
+
     
 class AllTransactionHistory(generics.ListAPIView):
     queryset = Transaction.objects.all()
@@ -76,4 +102,35 @@ class MakeTransactionView(generics.CreateAPIView):
 class AccountInfo(generics.RetrieveAPIView):
     queryset = Accounts.objects.all()
     serializer_class = AccountSerializer
+    
+
+class ResetPasswordView(generics.UpdateAPIView):
+    """
+    An endpoint for changing password.
+    """
+    serializer_class = ResetPasswordSerializer
+    model = User
+    # permission_classes = (IsAuthenticated)
+
+    def get_object(self, queryset=None):
+        obj = self.request.user
+        return obj
+
+    def update(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            if not self.object.check_password(serializer.data.get("old_password")):
+                return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
+            self.object.set_password(serializer.data.get("new_password"))
+            self.object.save()
+            response = {
+                'status': 'success',
+                'message': 'Password updated successfully',
+            }
+
+            return Response(data=response, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

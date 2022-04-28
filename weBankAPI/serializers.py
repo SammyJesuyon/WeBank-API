@@ -7,14 +7,20 @@ from rest_framework.authtoken.models import Token
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Accounts
-        fields = ['fullname','account_no', 'account_type']
-        
+        fields = ['id','fullname','account_no', 'account_type']
+    
+    
 class AccountCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Accounts
         fields = ['fullname','account_type']
 
 
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id','email',)
+       
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,17 +38,26 @@ class UserSerializer(serializers.ModelSerializer):
         Token.objects.create(user=user)
         return user
     
+
+class LoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
+    
+    
 class EmailVerification(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'otp']
         
-class LoginSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(max_length=68, min_length=8, write_only=True)
-
+        
+class ResetPasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'password']
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
 
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,7 +65,3 @@ class TransactionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ReportsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Report
-        fields = '__all__'
