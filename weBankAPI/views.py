@@ -3,8 +3,9 @@ from .models import *
 from .serializers import *
 from rest_framework.response import Response
 from rest_framework import generics, viewsets, status
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.conf import settings
+from django.contrib.auth import authenticate
 from .utils import Util
 
 
@@ -60,6 +61,39 @@ class VerifyEmail(generics.GenericAPIView):
         return Response(data={
             "success": "Your account has been successfully verified"
         }, status=status.HTTP_200_OK)
+        
+        
+class AccountCreation(generics.GenericAPIView):
+    serializer_class = AccountCreationSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        user = User.objects.get(email=request.user.email)
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            firstname = serializer.validated_data['firstname']
+            lastname = serializer.validated_data['lastname']
+            account_type = serializer.validated_data['account_type']
+            account_number = Util.create_account_number(7)
+            try:
+                account_creation = Accounts.objects.create(
+                    user_id=user,
+                    firstname=firstname,
+                    lastname=lastname,
+                    account_type=account_type,
+                    account_number=account_number,
+                )
+                return Response(data={'success': 'Account successfully created,',
+                                      'account_type': f' {account_type}',
+                                      'account_number': f'{account_creation.account_number}'},
+                                status=status.HTTP_202_ACCEPTED)
+
+            except Exception as error:
+                if Accounts.objects.get(user_id=user):
+                    return Response({'error': 'You already have an account'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(data={'error': error}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(data={'error': 'Something Went Wrong'}, status=status.HTTP_400_BAD_REQUEST)
     
 class AllTransactionHistory(generics.ListAPIView):
     queryset = Transaction.objects.all()
@@ -68,10 +102,6 @@ class AllTransactionHistory(generics.ListAPIView):
 class SpecificTransactionHistory(generics.RetrieveAPIView):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
-    
-class MakeTransactionView(generics.CreateAPIView):
-    serializer_class = TransactionSerializer
-    queryset = Transaction.objects.all()
 
 class AccountInfo(generics.RetrieveAPIView):
     queryset = Accounts.objects.all()

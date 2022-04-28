@@ -53,7 +53,8 @@ ACCOUNT_TYPE = (
 
 class Accounts(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    fullname = models.CharField(max_length=200, null=True)
+    firstname = models.CharField(max_length=200, null=True)
+    lastname = models.CharField(max_length=200, null=True)
     account_no = models.IntegerField(unique=True)
     account_type = models.CharField(max_length=40, choices=ACCOUNT_TYPE)
     account_balance = models.FloatField(default=[0])

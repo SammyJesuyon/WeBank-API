@@ -7,14 +7,12 @@ from rest_framework.authtoken.models import Token
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Accounts
-        fields = ['fullname','account_no', 'account_type']
+        fields = ['firstname', 'lastname', 'account_no', 'account_type']
         
 class AccountCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Accounts
-        fields = ['fullname','account_type']
-
-
+        fields = ['firstname', 'lastname', 'account_type']
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
