@@ -35,6 +35,7 @@ class User(AbstractUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    otp = models.CharField(max_length=10, null=True)
     
     objects = UserManager()
     
@@ -52,7 +53,8 @@ ACCOUNT_TYPE = (
 
 class Accounts(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    account_no = models.IntegerField()
+    fullname = models.CharField(max_length=200, null=True)
+    account_no = models.IntegerField(unique=True)
     account_type = models.CharField(max_length=40, choices=ACCOUNT_TYPE)
     account_balance = models.FloatField(default=[0])
     
@@ -69,8 +71,10 @@ TRANSACTION_TYPE_CHOICES = (
 )
 
 class Transaction(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE, null=True)
     accounts_id = models.ForeignKey(Accounts, on_delete=models.CASCADE)
     amount = models.DecimalField(decimal_places=2,max_digits=12)
+    account_balance = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     transaction_type = models.CharField(max_length= 20, choices=TRANSACTION_TYPE_CHOICES)
     timestamp = models.DateTimeField(auto_now_add=True)
 

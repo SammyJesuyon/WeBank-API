@@ -7,7 +7,13 @@ from rest_framework.authtoken.models import Token
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Accounts
-        fields = ['account_no', 'account_type']
+        fields = ['fullname','account_no', 'account_type']
+        
+class AccountCreationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Accounts
+        fields = ['fullname','account_type']
+
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -25,6 +31,18 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         Token.objects.create(user=user)
         return user
+    
+class EmailVerification(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'otp']
+        
+class LoginSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(max_length=68, min_length=8, write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['email', 'password']
 
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
