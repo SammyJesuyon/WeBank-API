@@ -1,6 +1,11 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractUser, PermissionsMixin
 
+from django.dispatch import receiver
+from django.urls import reverse
+from django_rest_passwordreset.signals import reset_password_token_created
+from django.core.mail import send_mail
 
 
 class UserManager(BaseUserManager):
@@ -84,10 +89,15 @@ class Transaction(models.Model):
     class Meta:
         ordering = ['timestamp']
 
-class Report(models.Model):
-    transaction_id = models.ForeignKey(Transaction, on_delete=models.CASCADE)
-    report_name = models.CharField(max_length=50)
-    report_date = models.DateTimeField(auto_now_add=True)
+    
+    
+    
+@receiver(reset_password_token_created)
+def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
 
-    def __str__(self) -> str:
-        return str(self.report_name)
+    subject = f'Password Reset'
+    message = f"{reverse('password_reset:reset-password-request')}?token={reset_password_token.key}"
+    email_from = settings.EMAIL_HOST
+
+    send_mail(subject,message,email_from,[reset_password_token.user.email])
+    

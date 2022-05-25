@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4af0be96-3bc9-4288-a2b0-f88ff7d9c917" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.dockerignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weBank/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/weBank/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weBank/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/weBank/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weBankAPI/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/weBankAPI/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weBankAPI/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/weBankAPI/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weBankAPI/migrations/0002_alter_user_username.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/weBankAPI/migrations/0003_alter_user_username.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/weBankAPI/migrations/0004_remove_user_otp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/weBankAPI/migrations/0005_transaction_account_balance_transaction_user_and_more.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/weBankAPI/migrations/0006_accounts_fullname_alter_accounts_account_no.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/weBankAPI/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/weBankAPI/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weBankAPI/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/weBankAPI/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weBankAPI/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/weBankAPI/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weBankAPI/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/weBankAPI/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weBankAPI/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/weBankAPI/views.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="29eF1XWqT1hirqwHDcYySU5446d" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4af0be96-3bc9-4288-a2b0-f88ff7d9c917" name="Changes" comment="" />
+      <created>1653465437546</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1653465437546</updated>
+      <workItem from="1653465442404" duration="645000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
